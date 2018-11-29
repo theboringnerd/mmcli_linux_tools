@@ -15,8 +15,8 @@ class SMS {
 	public:
 		SMS();
 		static SMS init(Modem modem);
-		bool good(), prepare();
-		void send(), set_msg(string msg), set_number(string number), set_class(string cls);
+		bool good(), prepare(), send();
+		void set_msg(string msg), set_number(string number), set_class(string cls);
 		void set_modem(Modem modem);
 };
 
@@ -45,10 +45,14 @@ bool SMS::good() {
 	return this->modem.good() and !this->msg.empty() and !this->number.empty() and !this->command.empty() and !this->index.empty();
 }
 
-void SMS::send() {
+bool SMS::send() {
 	string __ = "mmcli -s " + this->index + " --send";
 	string reply = Modem::pipe_terminal(__);
 	cout << "Command replied with: " << reply << endl;
+	if(reply.find("successfully sent the SMS") != string::npos) {
+		return true;
+	}
+	return false;
 }
 
 bool SMS::prepare() {

@@ -70,7 +70,10 @@ int main(int argc, char** argv) {
 	sms.set_number(number);
 	sms.set_class(cls);
 	sms.prepare();
-	if(sms.good()) sms.send();
+	if(sms.good()) {
+		if(!sms.send())
+			cout << "Error sending message!" << endl;
+	}
 	else {
 		cout << "sms is not configured correctly!! ENDING" << endl;
 		return 1;
