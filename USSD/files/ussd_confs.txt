@@ -1,0 +1,4 @@
+internet_bundle, [*123#-2-2], EG162G
+mobile_money_balance, [*126#-6-1-%], E3131A
+sms_balance, [*148*99#], E3131A
+phonenumber, [*135*8#], E3131A
