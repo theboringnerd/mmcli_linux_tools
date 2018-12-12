@@ -18,14 +18,25 @@ class SMS {
 		bool good(), prepare();
 		void send(), set_msg(string msg), set_number(string number), set_class(string cls);
 		void set_modem(Modem modem);
+		string get_message(), get_number();
 		vector<SMS> get_messages();
 		vector<string> split(string, char);
+
+		string trim(string), terminal_message(string, string);
 };
 
 
 SMS::SMS() {
 	//set sms class to normal by default
 	this->cls = "1";
+}
+
+string SMS::get_message() {
+	return this->msg;
+}
+
+string SMS::get_number() {
+	return this->number;
 }
 
 void SMS::set_modem(Modem modem) {
@@ -93,6 +104,26 @@ vector<string> SMS::split(string input, char del) {
 	return __;
 }
 
+string SMS::trim(string input) {
+	while(input[0] == ' ') {
+		input.erase(0, 1);
+	}
+	while(input.back() == ' ') {
+		input.erase(input.back(), 1);
+	}
+
+	return input;
+}
+
+string SMS::terminal_message(string keyword, string index) {
+	string __ = "mmcli -m " + this->modem.get_index() + " -s " + index + " | grep -i " + keyword;
+	__ = Modem::pipe_terminal(__);
+	__ = trim(__.substr(__.find(" '"), (__.length() - __.find(" '"))));
+	__.erase(0, 1);
+	__.erase(__.length() -2);
+
+	return __;
+}
 
 vector<SMS> SMS::get_messages() {
 	string __ = "mmcli -m " + this->modem.get_index() + " --messaging-list-sms | grep received";
@@ -100,16 +131,31 @@ vector<SMS> SMS::get_messages() {
 	cout << _ << endl;
 	//if(_.find("\n")!=string::npos) cout << "Found some carriage" << endl;
 	vector<string> ___ = split(_, '\n');
+	vector<SMS> messages;
 	for(auto i: ___) {
-		cout << "split: " << i << endl;
+		SMS sms;
+		//cout << "split: " << i << endl;
 		//cout << Modem::parse(i)[0] << endl;
 		_ = Modem::parse(i)[0];
 		size_t s__ = _.rfind("/") +1;
 		string index = i.substr(s__, (_.length() - s__));
-		cout << "SMS index: " << index << endl;
-	
+		//cout << "SMS index: " << index << endl;
+
+		//read the messages
+		string text = terminal_message("text", index);
+		cout << "TEXT:" << text << endl;
+		sms.msg = text;
+		
+		string number = terminal_message("number", index);
+		cout << "NUMBER:" << number << endl << endl;
+		sms.number = number;
+
+		messages.push_back(sms);
+		/*
+		string pdu_type = terminal_message("PDU type", index);
+		cout << "PDU TYPE: " << pdu_type << endl << endl;
+		*/
 	}
-	vector<SMS>messages;
 	return messages;
 }
 

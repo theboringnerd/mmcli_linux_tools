@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "__m/SMS.hpp"
+#include <fstream>
 
 using namespace std;
 
@@ -77,6 +78,13 @@ int main(int argc, char** argv) {
 	else if(received) {
 		cout << "Checking for sms!" << endl;
 		vector<SMS> messages = sms.get_messages();
+		//write everything to file
+		for(auto sms : messages) {
+			string __ = "messages/" + sms.get_number();
+			ofstream _(__.c_str(), ios::app);
+			_ << sms.get_message() << endl;
+			_.close();
+		}
 		cout << "Number of messages: " << messages.size() << endl;
 	}
 	else {
