@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
-	bool send = false;
+	bool send = false, received = false;
 	string msg, number, cls = "1";
 
 	if(argc < 2) {
@@ -20,6 +20,9 @@ int main(int argc, char** argv) {
 	for(int i=0;i<argc;i++) {
 		if((string)argv[i] == "--send") {
 			send = true;
+		}
+		else if((string)argv[i] == "--received") {
+			received = true;
 		}
 		else if((string)argv[i] == "--message") {
 			msg = (string)argv[i+1];
@@ -53,7 +56,7 @@ int main(int argc, char** argv) {
 			return 1;
 		}
 	}
-	else {
+	else if(!received) {
 		cout << "Not a valid input operation!" << endl;
 		return 1;
 	}
@@ -71,6 +74,11 @@ int main(int argc, char** argv) {
 	sms.set_class(cls);
 	sms.prepare();
 	if(sms.good()) sms.send();
+	else if(received) {
+		cout << "Checking for sms!" << endl;
+		vector<SMS> messages = sms.get_messages();
+		cout << "Number of messages: " << messages.size() << endl;
+	}
 	else {
 		cout << "sms is not configured correctly!! ENDING" << endl;
 		return 1;
