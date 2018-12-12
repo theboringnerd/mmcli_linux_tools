@@ -3,6 +3,8 @@
 #include <vector>
 #include "__m/SMS.hpp"
 #include <fstream>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -76,16 +78,20 @@ int main(int argc, char** argv) {
 	sms.prepare();
 	if(sms.good()) sms.send();
 	else if(received) {
-		cout << "Checking for sms!" << endl;
-		vector<SMS> messages = sms.get_messages();
-		//write everything to file
-		for(auto sms : messages) {
-			string __ = "messages/" + sms.get_number();
-			ofstream _(__.c_str(), ios::app);
-			_ << sms.get_message() << endl;
-			_.close();
+		while(1) {
+			cout << "Checking for sms!" << endl;
+			vector<SMS> messages = sms.get_messages();
+			//write everything to file
+			for(auto sms_entity : messages) {
+				string __ = "messages/" + sms_entity.get_number();
+				ofstream _(__.c_str(), ios::app);
+				_ << sms_entity.get_message() << endl;
+				_.close();
+				sms_entity.remove();
+			}
+			cout << "Number of messages: " << messages.size() << endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		}
-		cout << "Number of messages: " << messages.size() << endl;
 	}
 	else {
 		cout << "sms is not configured correctly!! ENDING" << endl;

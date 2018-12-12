@@ -17,7 +17,7 @@ class SMS {
 		static SMS init(Modem modem);
 		bool good(), prepare();
 		void send(), set_msg(string msg), set_number(string number), set_class(string cls);
-		void set_modem(Modem modem);
+		void set_modem(Modem modem), remove();
 		string get_message(), get_number();
 		vector<SMS> get_messages();
 		vector<string> split(string, char);
@@ -139,6 +139,8 @@ vector<SMS> SMS::get_messages() {
 		_ = Modem::parse(i)[0];
 		size_t s__ = _.rfind("/") +1;
 		string index = i.substr(s__, (_.length() - s__));
+		sms.modem = this->modem;
+		sms.index = index;
 		//cout << "SMS index: " << index << endl;
 
 		//read the messages
@@ -157,6 +159,12 @@ vector<SMS> SMS::get_messages() {
 		*/
 	}
 	return messages;
+}
+
+void SMS::remove() {
+	cout << "Deleting message with index: " << this->index << endl;
+	string __ = "mmcli -m " + this->modem.get_index() + " --messaging-delete-sms " + this->index;
+	cout << Modem::pipe_terminal(__) << endl;
 }
 
 #endif
