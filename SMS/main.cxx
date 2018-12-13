@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
 				_.close();
 				sms_entity.remove();
 			}
-			cout << "Number of messages: " << messages.size() << endl;
+			cout << "Number of messages: " << messages.size() << endl << endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(5000));
 		}
 	}

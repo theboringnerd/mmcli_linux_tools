@@ -128,7 +128,7 @@ string SMS::terminal_message(string keyword, string index) {
 vector<SMS> SMS::get_messages() {
 	string __ = "mmcli -m " + this->modem.get_index() + " --messaging-list-sms | grep received";
 	string _ = Modem::pipe_terminal(__);
-	cout << _ << endl;
+	//cout << _ << endl;
 	//if(_.find("\n")!=string::npos) cout << "Found some carriage" << endl;
 	vector<string> ___ = split(_, '\n');
 	vector<SMS> messages;
