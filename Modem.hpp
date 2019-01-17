@@ -30,12 +30,45 @@ class Modem {
 		static vector<string> parse(string, char);
 		bool good();
 
+		static vector<Modem> findAllModems();
+		static string get_modem_name(string);
+
 		void enable();
 		static string pipe_terminal(string);
 		
 		string get_index();
 
 };
+
+
+string Modem::get_modem_name(string input) {
+	vector<string> _ = Modem::parse(input, ' ');
+	return _[_.size() -1];
+}
+
+
+vector<Modem> Modem::findAllModems() {
+	cout << "Going to find all modems" << endl;
+	//cout << "would initialize modem: " << modem << endl;
+	//find the modem in the linux terminal first
+	string lm__ = "mmcli -L | grep Modem";
+	string __ = Modem::pipe_terminal(lm__);
+
+	vector<Modem> ml;
+
+	size_t car = __.find("\n");
+	if(vector<string>___; car != string::npos) {
+		cout << "Found carriage at: " << car << endl;
+		___ = Modem::parse(__, '\n');
+		for(auto i: ___) cout << "Modem found: " << Modem::get_modem_name(i) << endl;
+		for(auto i: ___) 
+			ml.push_back(Modem::init(Modem::get_modem_name(i)));
+	} else {
+		cout << "No carriage found!" << endl;
+	}
+
+	return ml;
+}
 
 string Modem::pipe_terminal(string command) {
 	string data;
@@ -77,7 +110,9 @@ vector<string> Modem::parse(string input, char del = ' ') {
 		s__ = cp__ +1;
 		cp__ = input.find(del, s__);
 	}
-	__.size() > 0 ? __.push_back(trim(input.substr(s__, input.length() -1))) : __.push_back(input);
+	string lo = trim(input.substr(s__, input.length() -1));
+	if(!lo.empty())
+		__.size() > 0 ? __.push_back(lo) : __.push_back(input);
 	return __;
 }
 
